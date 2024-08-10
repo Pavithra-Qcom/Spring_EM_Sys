@@ -3,6 +3,7 @@ package com.itzcorpio.spring_em_sys.controller;
 import com.itzcorpio.spring_em_sys.dto.LoginRequest;
 import com.itzcorpio.spring_em_sys.model.User;
 import com.itzcorpio.spring_em_sys.service.AuthService;
+import com.itzcorpio.spring_em_sys.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,18 +17,18 @@ import java.util.Optional;
 public class AuthController {
 
     @Autowired
-    private AuthService authService;
+    private UserService userService;
 
+    // Create a new user
+    @PostMapping("/register")
+    public ResponseEntity<User> createUser(@RequestBody User user) {
+        User savedUser = userService.register(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
+    }
 
-    // Login endpoint
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
-        Optional<User> userOpt = authService.login(loginRequest);
-        if (userOpt.isPresent()) {
-            return ResponseEntity.ok("Login successful");
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
-        }
+    public ResponseEntity<?> login(@RequestBody User user) {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.verify(user));
     }
 
 }
