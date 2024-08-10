@@ -12,7 +12,7 @@ public class HomeController {
 
     @GetMapping
     public String home() {
-        return "Hello API - Login - http://localhost:8083/auth/login";
+        return "Hello API __________ Login-(http://localhost:8083/auth/login), Register-(http://localhost:8083/auth/register)";
     }
 
 }

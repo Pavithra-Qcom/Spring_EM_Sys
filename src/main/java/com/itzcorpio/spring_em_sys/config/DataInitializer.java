@@ -6,6 +6,7 @@ import com.itzcorpio.spring_em_sys.repository.RoleRepository;
 import com.itzcorpio.spring_em_sys.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -21,8 +22,7 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
     @Override
     public void run(String... args) throws Exception {
@@ -41,13 +41,13 @@ public class DataInitializer implements CommandLineRunner {
 
             User user = new User();
             user.setUsername("user");
-            user.setPassword(passwordEncoder.encode("password"));
+            user.setPassword(encoder.encode("password"));
             user.setRoles(roles);
             userRepository.save(user);
 
             User admin = new User();
             admin.setUsername("admin");
-            admin.setPassword(passwordEncoder.encode("admin"));
+            admin.setPassword(encoder.encode("admin"));
             admin.setRoles(roles);
             userRepository.save(admin);
         }

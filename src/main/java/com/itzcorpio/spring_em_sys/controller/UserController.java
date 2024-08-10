@@ -3,6 +3,7 @@ package com.itzcorpio.spring_em_sys.controller;
 import com.itzcorpio.spring_em_sys.model.User;
 import com.itzcorpio.spring_em_sys.repository.UserRepository;
 import com.itzcorpio.spring_em_sys.service.AuthService;
+import com.itzcorpio.spring_em_sys.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,18 +22,11 @@ public class UserController {
     private UserRepository userRepository;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
     private AuthService authService;
 
-    // Create a new user
-    @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        User savedUser = userRepository.save(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
-    }
+    @Autowired
+    private UserService userService;
+
 
     // Get all users
     @GetMapping
@@ -55,15 +49,8 @@ public class UserController {
     // Update user
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User userDetails) {
-        Optional<User> userOpt = userRepository.findById(id);
-        if (userOpt.isPresent()) {
-            User user = userOpt.get();
-            user.setUsername(userDetails.getUsername());
-            if (userDetails.getPassword() != null && !userDetails.getPassword().isEmpty()) {
-                user.setPassword(passwordEncoder.encode(userDetails.getPassword()));
-            }
-            user.setRoles(userDetails.getRoles());
-            User updatedUser = userRepository.save(user);
+        User updatedUser = userService.update(id, userDetails);
+        if (updatedUser != null) {
             return ResponseEntity.ok(updatedUser);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
