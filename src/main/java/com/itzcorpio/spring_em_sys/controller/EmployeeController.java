@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-@CrossOrigin(origins = "http://localhost:3175")
+@CrossOrigin(origins = "http://localhost:9692")
 @RestController
 @RequestMapping("api/v1/employees")
 public class EmployeeController {
@@ -42,6 +42,11 @@ public class EmployeeController {
     @DeleteMapping("/{id}")
     public void deleteEmployee(@PathVariable Long id) {
         employeeService.deleteEmployee(id);
+    }
+
+    @PutMapping("/{id}")
+    public Employee updateEmployee(@PathVariable Long id, @RequestBody Employee employee){
+        return employeeService.updateEmployee(id, employee);
     }
 
     @PostMapping("/{id}/profile-picture")
