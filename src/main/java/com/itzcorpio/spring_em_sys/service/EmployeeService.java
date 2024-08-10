@@ -36,6 +36,22 @@ public class EmployeeService {
         employeeRepository.deleteById(id);
     }
 
+    public Employee updateEmployee(Long id, Employee employee){
+        Optional<Employee> emp = employeeRepository.findById(id);
+
+        if(emp.isPresent()){
+            Employee existingEmployee = emp.get();
+
+            existingEmployee.setName(employee.getName());
+            existingEmployee.setEmail(employee.getEmail());
+            existingEmployee.setPosition(employee.getPosition());
+
+            return employeeRepository.save(existingEmployee);
+        }else {
+            throw new RuntimeException("Employee not found");
+        }
+    }
+
     public void saveProfilePicture(MultipartFile file, Long employeeId) throws IOException {
         if (!Files.exists(Paths.get(storageDirectory))) {
             Files.createDirectories(Paths.get(storageDirectory));
