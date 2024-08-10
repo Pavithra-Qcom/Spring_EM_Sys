@@ -18,7 +18,7 @@ public class EmployeeService {
     @Autowired
     private EmployeeRepository employeeRepository;
 
-    private final String storageDirectory = "C:\\Users\\samurai\\Pictures\\APP\\profile_pictures";
+    private final String storageDirectory = "C:\\Users\\rogue\\Downloads\\profile_pictures";
 
     public List<Employee> getAllEmployees() {
         return employeeRepository.findAll();
