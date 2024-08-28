@@ -2,12 +2,17 @@ package com.itzcorpio.spring_em_sys.service;
 
 import com.itzcorpio.spring_em_sys.model.Employee;
 import com.itzcorpio.spring_em_sys.repository.EmployeeRepository;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
@@ -70,4 +75,20 @@ public class EmployeeService {
         String picturePath = employee.getProfilePicturePath();
         return Files.readAllBytes(Paths.get(picturePath));
     }
+
+    public ByteArrayOutputStream exportEmployeeListPdf(List<Employee> employees) throws JRException
+    {
+        File jrxmlFile = new File("./report/employeeList.jrxml");
+
+        JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(employees);
+        JasperReport jasperReport = JasperCompileManager.compileReport(jrxmlFile.getAbsolutePath());
+
+        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, null, dataSource);
+
+        ByteArrayOutputStream pdfOutputStream = new ByteArrayOutputStream();
+        JasperExportManager.exportReportToPdfStream(jasperPrint, pdfOutputStream);
+
+        return pdfOutputStream;
+    }
+
 }

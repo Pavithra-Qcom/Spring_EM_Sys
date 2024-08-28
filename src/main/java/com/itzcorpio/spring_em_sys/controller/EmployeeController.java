@@ -4,15 +4,16 @@ import com.itzcorpio.spring_em_sys.model.Employee;
 import com.itzcorpio.spring_em_sys.service.EmployeeService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.*;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Optional;
 
@@ -74,6 +75,30 @@ public class EmployeeController {
     @GetMapping("/csrf-token")
     public CsrfToken getCsrfToken(HttpServletRequest request) {
         return (CsrfToken) request.getAttribute("_csrf");
+    }
+
+    @GetMapping("/report")
+    public ResponseEntity<ByteArrayResource> downloadEmployeeReport() {
+        try {
+            List<Employee> employees = employeeService.getAllEmployees();
+
+            ByteArrayOutputStream pdfStream = employeeService.exportEmployeeListPdf(employees);
+
+            ByteArrayResource resource = new ByteArrayResource(pdfStream.toByteArray());
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .contentLength(resource.contentLength())
+                    .header(HttpHeaders.CONTENT_DISPOSITION,
+                            ContentDisposition.attachment()
+                                    .filename("Employee_List.pdf")
+                                    .build().toString())
+                    .body(resource);
+
+
+        } catch (Exception e) {
+            return ResponseEntity.status(500).build();
+        }
     }
 
 }

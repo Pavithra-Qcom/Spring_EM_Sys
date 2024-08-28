@@ -32,11 +32,11 @@ public class SecurityConfiguration {
         return httpSecurity
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/").permitAll()
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/employees/**").authenticated()
-                        .requestMatchers("/users/**").authenticated()
-                        .anyRequest().authenticated()
+//                        .requestMatchers("/").permitAll()
+//                        .requestMatchers("/auth/**").permitAll()
+//                        .requestMatchers("/employees/**").authenticated()
+//                        .requestMatchers("/users/**").authenticated()
+                        .anyRequest().permitAll()
                 )
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
