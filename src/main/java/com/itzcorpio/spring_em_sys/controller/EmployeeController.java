@@ -2,6 +2,8 @@ package com.itzcorpio.spring_em_sys.controller;
 
 import com.itzcorpio.spring_em_sys.model.Employee;
 import com.itzcorpio.spring_em_sys.service.EmployeeService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -25,6 +27,20 @@ public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;
 
+    @Operation(
+            tags = "GET Employee",
+            description = "Get all employees",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200"
+                    ),
+                    @ApiResponse(
+                            description = "Data not found",
+                            responseCode = "404"
+                    )
+            }
+    )
     @GetMapping
     public List<Employee> getAllEmployees() {
         return employeeService.getAllEmployees();
