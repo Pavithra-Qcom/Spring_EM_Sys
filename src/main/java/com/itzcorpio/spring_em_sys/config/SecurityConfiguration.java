@@ -3,6 +3,7 @@ package com.itzcorpio.spring_em_sys.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -32,11 +33,13 @@ public class SecurityConfiguration {
         return httpSecurity
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers("/").permitAll()
-//                        .requestMatchers("/auth/**").permitAll()
-//                        .requestMatchers("/employees/**").authenticated()
-//                        .requestMatchers("/users/**").authenticated()
-                        .anyRequest().permitAll()
+                        .requestMatchers("/").permitAll()
+                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/employees/**").authenticated()
+//                        .requestMatchers(HttpMethod.DELETE,"/api/v1/employees/**").hasRole("admin")
+//                        .requestMatchers(HttpMethod.PUT,"/api/v1/employees/**").hasRole("admin")
+                        .requestMatchers("/users/**").authenticated()
+                        .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
